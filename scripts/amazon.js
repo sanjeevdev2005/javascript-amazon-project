@@ -1,14 +1,16 @@
 // 3 steps to get to a java script is the main idea is
-// save the data 
-// genrate the html 
+// save the data
+// genrate the html
 // make it interactive
+import { cart } from "../data/cart.js";
+import { products } from "../data/products.js";
 
 
 
 
-let productHTML = '';
+let productHTML = "";
 products.forEach((products) => {
-   productHTML += `<div class="product-container">
+  productHTML += `<div class="product-container">
           <div class="product-image-container">
             <img class="product-image"
               src="${products.image}">
@@ -27,7 +29,7 @@ products.forEach((products) => {
           </div>
 
           <div class="product-price">
-            ${(products.priceCents /100).toFixed(2)}
+            ${(products.priceCents / 100).toFixed(2)}
           </div>
 
           <div class="product-quantity-container">
@@ -52,13 +54,41 @@ products.forEach((products) => {
             Added
           </div>
 
-          <button class="add-to-cart-button button-primary">
+          <button class="add-to-cart-button button-primary js-add-to-cart" data-product-id = "${products.id}">
             Add to Cart
           </button>
         </div>`;
+});
+
+document.querySelector(".js-product-grid").innerHTML = productHTML;
+
+document.querySelectorAll(".js-add-to-cart").forEach((button) => {
+  button.addEventListener("click", () => {
+    const productId = button.dataset.productId;
+
+    let matchingitem;
+
+    cart.forEach((item) => {
+      if (productId == item.productId) {
+        matchingitem = item;
+      }
+    });
+
+    if (matchingitem) {
+      matchingitem.quantity += 1;
+    } else {
+      cart.push({
+        productId: productId,
+        quantity: 1,
+      });
+    }
+
+    let cartQuantity = 0;
+    cart.forEach((item) => {
+      cartQuantity += item.quantity;
+    })
+
+    document.querySelector('.js-cart-quantity').innerHTML = cartQuantity;
+    
   });
-
-
-
-
- document.querySelector('.js-product-grid').innerHTML = productHTML;
+});
